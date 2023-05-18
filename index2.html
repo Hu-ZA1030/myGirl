@@ -1,107 +1,310 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title></title>
-    <style>
-        /* 清除浏览器样式 */
+    <meta charset="UTF-8">
+    <title>3D场景照片墙</title>
+    <style type="text/css">
         * {
             margin: 0;
             padding: 0;
         }
 
         body {
-            width: 100vw;
-            height: 100vh;
             background: #000;
-            display: flex;
-            justify-content: center;
-            /* 开启透视效果 */
-            perspective: 1500px;
+            overflow: hidden;
+            /*内容不能被选中*/
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
-        /* 设置外盒子  弹性盒子 居中*/
-        /* 设置距离 */
-        .shell {
-            margin-top: 200px;
-            display: flex;
-            justify-content: center;
-            /* 开启3d样式 */
+        #perspective {
+            perspective: 800px;
+            /*景深*/
+        }
+
+        #wrap {
+            position: relative;
+            width: 150px;
+            height: 178px;
+            margin: 200px auto;
             transform-style: preserve-3d;
-            /* 开启动画 */
-            animation: action 20s linear infinite;
+            /*构建3d场景*/
+            transform: rotateX(-20deg) rotateY(0deg);
+            animation: rotate-cube 70s ease-in-out infinite;
         }
 
-        /* 设置图片的大小 */
-        .shell img {
-            width: 276px;
-            height: 355px;
-            /* 开启绝对定位 */
+
+        #wrap .image-block {
             position: absolute;
-            /* 最后，添加倒影效果 */
-            /* 给下方添加倒影 采用先行渐变 去除10% 保留其他 透明度为0.3 白色 */
-            -webkit-box-reflect: below 15px -webkit-linear-gradient(transparent 10%, rgba(255, 255, 255, .3));
+            transform: rotateY(0deg);
+            /*transition: 1s;值的改变有一个过渡的过程*/
+            /* animation: rotate-cube 10s ease-in-out infinite; */
         }
 
-        /* 此处设置六个图片的单独控制,以便于操作图片的旋转与平移 */
-        /* 第一幅图片不需要进行旋转 直接平移即可 */
-        /* 第二幅图片从60度开始，每次为60的倍数 */
-        /* 由于我们还没有开启3d样式所以效果不明显 */
-        .shell img:nth-child(1) {
-            transform: translateZ(500px);
+        #wrap .image-block img {
+            width: 150px;
+            height: 178px;
         }
 
-        .shell img:nth-child(2) {
-            transform: rotateY(60deg) translateZ(500px);
+        .pic {
+            border: 2px solid #fff;
+            padding: 5px;
+            -moz-box-shadow: 0px 0px 8px 2px #fdfdfd;
+            /*firefox*/
+            -webkit-box-shadow: 0px 0px 8px 2px #fdfdfd;
+            /*webkit*/
+            box-shadow: 0px 0px 8px 2px #fdfdfd;
+            /*opera或ie9*/
         }
 
-        .shell img:nth-child(3) {
-            transform: rotateY(120deg) translateZ(500px);
+        /*倒影效果 s*/
+        .reflection {
+            position: relative;
+            padding-left: 8px;
         }
 
-        .shell img:nth-child(4) {
-            transform: rotateY(180deg) translateZ(500px);
+        .reflection img {
+            -webkit-transform: scaleY(-1);
+            -moz-transform: scaleY(-1);
+            -ms-transform: scaleY(-1);
+            -o-transform: scaleY(-1);
+            transform: scaleY(-1);
+            filter: flipv;
+            opacity: 0.50;
+            filter: alpha(opacity='50');
         }
 
-        .shell img:nth-child(5) {
-            transform: rotateY(240deg) translateZ(500px);
+        .reflection .overlay {
+            position: absolute;
+            top: 0px;
+            left: 8px;
+            width: 150px;
+            height: 178px;
+            background-image: -moz-linear-gradient(center bottom, rgb(0, 0, 0) 60%, rgba(0, 0, 0, 0) 75%);
+            background-image: -o-linear-gradient(rgba(0, 0, 0, 0) 25%, rgb(0, 0, 0) 40%);
+            background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.60, rgb(0, 0, 0)), color-stop(0.75, rgba(0, 0, 0, 0)));
+            filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0, startColor=0, EndColorStr=#000000);
         }
 
-        .shell img:nth-child(6) {
-            transform: rotateY(300deg) translateZ(500px);
-        }
-
-        /* 提前准备好动画 用于控制旋转  */
-        /* 控制动画从0度到360度旋转一圈 */
-        @keyframes action {
+        @keyframes rotate-cube {
             0% {
                 transform: rotateY(0deg);
+            }
+
+            10% {
+                /* 右边图片 */
+                transform: rotateY(36deg)
+            }
+
+            20% {
+                /* 右边图片 */
+                transform: rotateY(72deg)
+            }
+
+            30% {
+                /* 右边图片 */
+                transform: rotateY(108deg)
+            }
+
+            40% {
+                /* 右边图片 */
+                transform: rotateY(144deg)
+            }
+
+            50% {
+                /* 右边图片 */
+                transform: rotateY(180deg)
+            }
+
+            60% {
+                /* 上 */
+                transform: rotateY(216deg);
+            }
+
+            70% {
+                /* 左 */
+                transform: rotateY(252deg);
+            }
+
+            80% {
+                /* 下 */
+                transform: rotateY(288deg);
+            }
+
+            90% {
+                /* 下 */
+                transform: rotateY(324deg);
             }
 
             100% {
                 transform: rotateY(360deg);
             }
         }
-
-        /* 当鼠标经过盒子，暂停动画 */
-        .shell:hover {
-            cursor: pointer;
-            animation-play-state: paused;
-        }
     </style>
 </head>
 
 <body>
-    <div class="shell">
-        <img src="./image/12.jpg">
-        <img src="./image/11.jpg">
-        <img src="./image/3.jpg">
-        <img src="./image/5.jpg">
-        <img src="./image/6.jpg">
-        <img src="./image/10.jpg">
-        <img src="./image/9.jpg">
+    <div id="perspective">
+        <div id="wrap">
+
+            <div class="image-block">
+                <img class="pic" src="./image/1.jpg" />
+                <div class="reflection">
+                    <img src="./image/1.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/2.jpg" />
+                <div class="reflection">
+                    <img src="./image/2.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/3.jpg" />
+                <div class="reflection">
+                    <img src="./image/3.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/4.jpg" />
+                <div class="reflection">
+                    <img src="./image/4.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/5.jpg" />
+                <div class="reflection">
+                    <img src="./image/5.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/6.jpg" />
+                <div class="reflection">
+                    <img src="./image/6.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/7.jpg" />
+                <div class="reflection">
+                    <img src="./image/7.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/8.jpg" />
+                <div class="reflection">
+                    <img src="./image/8.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/9.jpg" />
+                <div class="reflection">
+                    <img src="./image/9.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/10.jpg" />
+                <div class="reflection">
+                    <img src="./image/10.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/11.jpg" />
+                <div class="reflection">
+                    <img src="./image/11.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+            <div class="image-block">
+                <img class="pic" src="./image/12.jpg" />
+                <div class="reflection">
+                    <img src="./image/12.jpg" />
+                    <div class="overlay"></div>
+                </div>
+            </div>
+
+        </div>
     </div>
+    <script>
+        /*功能一：
+            所有的图片撑开成一个圆
+            1.所有图片旋转一定的度数
+            0*deg   1*deg   2*deg
+            2.便利所有图片，并动态绑定一个度数值
+    
+          功能二：
+            拖拽
+            1.按下  移动  松开
+            相册移动的位置  鼠标移动的位置
+    
+            相册移动的距离：
+            坐标差 = 现在的坐标 - 以前的坐标
+    
+            算出相册的总度数  累加上差值
+         */
+        window.onload = function () { //页面加载完毕再执行
+            var oImg = document.getElementsByClassName("image-block");
+            var deg = 360 / 12; //旋转的单位度数
+
+            var nowX, nowY, lastX, lastY, minsX, minsY, roX = -20, roY = 0;
+
+            Array.prototype.forEach.call(oImg, function (el, index) {
+                el.style.transform = "rotateY(" + index * deg + "deg) translateZ(400px)";
+                el.style.transition = "1s " + (12 - index) * 0.05 + "s"
+            });
+
+            document.onmousedown = function (e) {
+                //            点击
+                var e = e || window.event;
+                /*兼容IE 与 火狐*/
+                lastX = e.clientX;
+                lastY = e.clientY;
+                this.onmousemove = function (e) {
+                    //               移动
+                    var e = e || window.event;
+
+                    //                现在的值
+                    nowX = e.clientX;
+                    nowY = e.clientY;
+
+                    //                即将要做的事情
+                    //                坐标差
+                    minsX = nowX - lastX;
+                    minsY = nowY - lastY;
+
+                    //                旋转的总度数的值
+                    roX -= minsY * 0.2;
+                    roY += minsX * 0.2;
+
+                    //id获取的元素可以直接通过元素Id去获取  可以不需要通过document.getElementById();
+                    wrap.style.transform = "rotateX(" + roX + "deg) rotateY(" + roY + "deg)"
+
+                    //                用完的值
+                    lastX = nowX;
+                    lastY = nowY;
+
+                }
+                this.onmouseup = function (e) {
+                    this.onmousemove = null;
+                    this.onmouseup = null;
+                }
+            }
+        }
+    </script>
+
+
 </body>
 
 </html>
